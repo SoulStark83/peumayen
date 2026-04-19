@@ -1,26 +1,116 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(0.975 0.006 85);
+  --foreground: oklch(0.22 0.012 85);
+  --card: oklch(0.99 0.004 85);
+  --card-foreground: oklch(0.22 0.012 85);
+  --popover: oklch(0.99 0.004 85);
+  --popover-foreground: oklch(0.22 0.012 85);
+  --primary: oklch(0.48 0.08 155);
+  --primary-foreground: oklch(0.985 0.004 85);
+  --secondary: oklch(0.94 0.008 85);
+  --secondary-foreground: oklch(0.28 0.012 85);
+  --muted: oklch(0.94 0.008 85);
+  --muted-foreground: oklch(0.48 0.012 85);
+  --accent: oklch(0.91 0.018 150);
+  --accent-foreground: oklch(0.28 0.040 155);
+  --destructive: oklch(0.55 0.18 28);
+  --destructive-foreground: oklch(0.985 0.004 85);
+  --border: oklch(0.88 0.010 85);
+  --input: oklch(0.88 0.010 85);
+  --ring: oklch(0.55 0.08 155);
+
+  --member-1: oklch(0.58 0.10 150);
+  --member-2: oklch(0.62 0.11 75);
+  --member-3: oklch(0.58 0.13 35);
+  --member-4: oklch(0.55 0.08 240);
+  --member-5: oklch(0.65 0.09 15);
+  --member-6: oklch(0.58 0.09 295);
+  --member-7: oklch(0.55 0.09 195);
+  --member-roma: oklch(0.65 0.13 65);
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.18 0.008 85);
+  --foreground: oklch(0.96 0.006 85);
+  --card: oklch(0.22 0.009 85);
+  --card-foreground: oklch(0.96 0.006 85);
+  --popover: oklch(0.22 0.009 85);
+  --popover-foreground: oklch(0.96 0.006 85);
+  --primary: oklch(0.72 0.10 155);
+  --primary-foreground: oklch(0.18 0.020 155);
+  --secondary: oklch(0.28 0.010 85);
+  --secondary-foreground: oklch(0.96 0.006 85);
+  --muted: oklch(0.28 0.010 85);
+  --muted-foreground: oklch(0.72 0.010 85);
+  --accent: oklch(0.32 0.025 150);
+  --accent-foreground: oklch(0.92 0.025 150);
+  --destructive: oklch(0.62 0.19 28);
+  --destructive-foreground: oklch(0.96 0.006 85);
+  --border: oklch(0.30 0.012 85 / 60%);
+  --input: oklch(0.30 0.012 85 / 80%);
+  --ring: oklch(0.65 0.10 155);
+
+  --member-1: oklch(0.68 0.11 150);
+  --member-2: oklch(0.72 0.12 75);
+  --member-3: oklch(0.68 0.13 35);
+  --member-4: oklch(0.66 0.09 240);
+  --member-5: oklch(0.74 0.10 15);
+  --member-6: oklch(0.68 0.10 295);
+  --member-7: oklch(0.66 0.10 195);
+  --member-roma: oklch(0.74 0.13 65);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-member-1: var(--member-1);
+  --color-member-2: var(--member-2);
+  --color-member-3: var(--member-3);
+  --color-member-4: var(--member-4);
+  --color-member-5: var(--member-5);
+  --color-member-6: var(--member-6);
+  --color-member-7: var(--member-7);
+  --color-member-roma: var(--member-roma);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  }
 }

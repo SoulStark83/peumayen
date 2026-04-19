@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Service worker generado por Serwist (rebuild al hacer `next build`)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+
+# Claude Code (archivos locales de usuario)
+.claude/settings.local.json
