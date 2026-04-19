@@ -112,7 +112,7 @@ export function CalendarView({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl p-3">
+        <div className="mx-auto w-full max-w-4xl p-4">
           <MonthGrid
             year={cursor.year}
             month0={cursor.month0}

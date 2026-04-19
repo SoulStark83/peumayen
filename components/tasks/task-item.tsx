@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Item } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function TaskItem({ item }: { item: Item }) {
+export function TaskItem({ item, hideScope }: { item: Item; hideScope?: boolean }) {
   const assignee = useMemberById(item.assigned_to);
   const [busy, setBusy] = useState(false);
   const completed = !!item.completed_at;
@@ -55,7 +55,7 @@ export function TaskItem({ item }: { item: Item }) {
   return (
     <li
       className={cn(
-        "bg-card relative flex items-start gap-3 overflow-hidden rounded-lg border p-3 pl-4 transition",
+        "bg-card relative flex items-start gap-3 overflow-hidden rounded-xl border p-4 pl-5 transition",
         completed && "opacity-60",
         busy && "pointer-events-none opacity-50",
       )}
@@ -63,14 +63,14 @@ export function TaskItem({ item }: { item: Item }) {
       <span
         aria-hidden
         className={cn(
-          "absolute top-0 bottom-0 left-0 w-1",
+          "absolute top-0 bottom-0 left-0 w-1.5",
           stripeClass,
         )}
       />
       <Checkbox
         checked={completed}
         onCheckedChange={toggleComplete}
-        className="mt-1"
+        className="mt-0.5 size-5"
         aria-label={completed ? "Marcar como pendiente" : "Marcar como completada"}
       />
 
@@ -78,27 +78,29 @@ export function TaskItem({ item }: { item: Item }) {
         <div className="flex items-start justify-between gap-2">
           <p
             className={cn(
-              "text-sm font-medium",
+              "text-base font-medium leading-snug",
               completed && "line-through",
             )}
           >
             {item.title}
           </p>
-          <Badge
-            variant="outline"
-            className={cn("shrink-0 text-xs", scopeStyle.badge)}
-          >
-            {scopeStyle.label}
-          </Badge>
+          {!hideScope && (
+            <Badge
+              variant="outline"
+              className={cn("shrink-0 text-xs", scopeStyle.badge)}
+            >
+              {scopeStyle.label}
+            </Badge>
+          )}
         </div>
 
         {item.description && (
-          <p className="text-muted-foreground mt-0.5 line-clamp-2 text-xs">
+          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
             {item.description}
           </p>
         )}
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
           {item.due_at && (
             <span
               className={cn(
@@ -111,12 +113,12 @@ export function TaskItem({ item }: { item: Item }) {
           )}
           {assignee && (
             <span className="text-muted-foreground inline-flex items-center gap-1.5">
-              <Avatar className="h-4 w-4">
+              <Avatar className="h-5 w-5">
                 {assignee.avatar_url && (
                   <AvatarImage src={assignee.avatar_url} alt={assignee.display_name} />
                 )}
                 <AvatarFallback
-                  className={cn("text-[9px]", colorForName(assignee.display_name))}
+                  className={cn("text-[10px]", colorForName(assignee.display_name))}
                 >
                   {initialsFor(assignee.display_name)}
                 </AvatarFallback>
@@ -133,7 +135,7 @@ export function TaskItem({ item }: { item: Item }) {
         size="icon"
         onClick={remove}
         disabled={busy}
-        className="text-muted-foreground hover:text-destructive h-8 w-8 shrink-0"
+        className="text-muted-foreground hover:text-destructive h-9 w-9 shrink-0"
         aria-label="Borrar"
       >
         <Trash2 className="h-4 w-4" />

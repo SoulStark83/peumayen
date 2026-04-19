@@ -3,9 +3,7 @@
 import { ArrowLeftRight, Trash2, TrendingDown, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SCOPE_STYLES } from "@/lib/colors";
 import { formatEUR } from "@/lib/currency";
 import { formatDayMonth } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
@@ -24,7 +22,6 @@ export function TransactionRow({ item }: { item: Item }) {
   const data = (item.data as TxData) ?? { amount: 0, kind: "expense" };
   const isIncome = data.kind === "income";
   const isTransfer = data.kind === "transfer";
-  const scopeStyle = SCOPE_STYLES[item.scope];
 
   async function remove() {
     if (busy) return;
@@ -38,13 +35,13 @@ export function TransactionRow({ item }: { item: Item }) {
   return (
     <li
       className={cn(
-        "bg-card flex items-center gap-3 rounded-lg border p-3 transition",
+        "bg-card group flex items-center gap-3 rounded-xl border p-4 transition",
         busy && "pointer-events-none opacity-50",
       )}
     >
       <div
         className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+          "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
           isTransfer
             ? "bg-muted text-muted-foreground"
             : isIncome
@@ -54,26 +51,27 @@ export function TransactionRow({ item }: { item: Item }) {
         aria-hidden
       >
         {isTransfer ? (
-          <ArrowLeftRight className="h-4 w-4" />
+          <ArrowLeftRight className="h-5 w-5" />
         ) : isIncome ? (
-          <TrendingUp className="h-4 w-4" />
+          <TrendingUp className="h-5 w-5" />
         ) : (
-          <TrendingDown className="h-4 w-4" />
+          <TrendingDown className="h-5 w-5" />
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline justify-between gap-2">
-          <p className="truncate text-sm font-medium">{item.title}</p>
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="truncate text-base font-medium">{item.title}</p>
           <p
             className={cn(
-              "shrink-0 text-sm font-semibold tabular-nums",
+              "shrink-0 text-base font-semibold tabular-nums",
               isIncome ? "text-emerald-600" : "text-foreground",
             )}
           >
+            {isIncome ? "+" : "−"}
             {formatEUR(Math.abs(data.amount))}
           </p>
         </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
           {item.due_at && (
             <span className="text-muted-foreground">
               {formatDayMonth(item.due_at)}
@@ -82,9 +80,11 @@ export function TransactionRow({ item }: { item: Item }) {
           {data.category && (
             <span className="text-muted-foreground">· {data.category}</span>
           )}
-          <Badge variant="outline" className={cn("text-xs", scopeStyle.badge)}>
-            {scopeStyle.label}
-          </Badge>
+          {data.subcategory && (
+            <span className="text-muted-foreground">
+              · {data.subcategory.replace(/_/g, " ")}
+            </span>
+          )}
         </div>
       </div>
       <Button
@@ -93,7 +93,7 @@ export function TransactionRow({ item }: { item: Item }) {
         size="icon"
         onClick={remove}
         disabled={busy}
-        className="text-muted-foreground hover:text-destructive h-8 w-8 shrink-0"
+        className="text-muted-foreground/60 hover:text-destructive h-9 w-9 shrink-0 transition-colors"
         aria-label="Borrar"
       >
         <Trash2 className="h-4 w-4" />

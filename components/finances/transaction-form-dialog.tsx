@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ScopePicker } from "@/components/common/scope-picker";
 import {
   useCurrentMember,
   useHousehold,
@@ -20,7 +19,6 @@ import { Label } from "@/components/ui/label";
 import { parseAmount } from "@/lib/currency";
 import { todayISODateMadrid } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
-import type { Scope } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type Kind = "expense" | "income";
@@ -52,7 +50,6 @@ export function TransactionFormDialog({
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Súper");
   const [date, setDate] = useState(todayISODateMadrid());
-  const [scope, setScope] = useState<Scope>("family");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -62,7 +59,6 @@ export function TransactionFormDialog({
       setTitle("");
       setCategory("Súper");
       setDate(todayISODateMadrid());
-      setScope("family");
     }
   }, [open]);
 
@@ -80,7 +76,7 @@ export function TransactionFormDialog({
     const { error } = await supabase.from("items").insert({
       household_id: household.id,
       type: "transaction",
-      scope,
+      scope: "couple",
       title: title.trim(),
       due_at: `${date}T12:00:00`,
       created_by: currentMember.id,
@@ -183,11 +179,6 @@ export function TransactionFormDialog({
                 required
               />
             </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label>Ámbito</Label>
-            <ScopePicker value={scope} onChange={(v) => setScope(v as Scope)} />
           </div>
 
           <DialogFooter className="mt-2">

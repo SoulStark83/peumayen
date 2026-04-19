@@ -34,18 +34,18 @@ export function TopHeader() {
       className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 border-b backdrop-blur"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         <div className="min-w-0">
-          <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
+          <p className="text-muted-foreground text-[11px] font-semibold uppercase tracking-[0.14em]">
             Peumayen
           </p>
-          <h1 className="truncate text-base font-semibold">{household.name}</h1>
+          <h1 className="truncate text-lg font-semibold">{household.name}</h1>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <Avatar className="h-9 w-9">
-              <AvatarFallback className={cn("text-xs font-semibold", colorForName(me.display_name))}>
+            <Avatar className="h-10 w-10">
+              <AvatarFallback className={cn("text-sm font-semibold", colorForName(me.display_name))}>
                 {initialsFor(me.display_name)}
               </AvatarFallback>
             </Avatar>

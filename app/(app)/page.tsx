@@ -13,49 +13,56 @@ import { requireHouseholdContext } from "@/lib/auth";
 import { todayISODateMadrid } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
 import type { Item, Presence } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
   const { household, currentMember, members } = await requireHouseholdContext();
   const supabase = await createClient();
   const today = todayISODateMadrid();
+  const isAdmin = currentMember.role === "admin";
 
   const todayStart = new Date(`${today}T00:00:00+02:00`).toISOString();
   const todayEnd = new Date(`${today}T23:59:59+02:00`).toISOString();
 
-  const [presenceRes, openTasksRes, todayEventsRes, todayTxRes, shoppingRes] =
-    await Promise.all([
-      supabase
-        .from("presence")
-        .select("id, household_id, member_id, date, status, notes, updated_by, updated_at")
-        .eq("household_id", household.id)
-        .eq("date", today),
-      supabase
-        .from("items")
-        .select("id, assigned_to, due_at")
-        .eq("household_id", household.id)
-        .eq("type", "task")
-        .is("completed_at", null),
-      supabase
-        .from("items")
-        .select("id")
-        .eq("household_id", household.id)
-        .eq("type", "event")
-        .gte("due_at", todayStart)
-        .lte("due_at", todayEnd),
-      supabase
+  const baseQueries = [
+    supabase
+      .from("presence")
+      .select("id, household_id, member_id, date, status, notes, updated_by, updated_at")
+      .eq("household_id", household.id)
+      .eq("date", today),
+    supabase
+      .from("items")
+      .select("id, assigned_to, due_at")
+      .eq("household_id", household.id)
+      .eq("type", "task")
+      .is("completed_at", null),
+    supabase
+      .from("items")
+      .select("id")
+      .eq("household_id", household.id)
+      .eq("type", "event")
+      .gte("due_at", todayStart)
+      .lte("due_at", todayEnd),
+    supabase
+      .from("items")
+      .select("id")
+      .eq("household_id", household.id)
+      .eq("type", "shopping")
+      .is("completed_at", null),
+  ] as const;
+
+  const [presenceRes, openTasksRes, todayEventsRes, shoppingRes] =
+    await Promise.all(baseQueries);
+
+  const todayTxRes = isAdmin
+    ? await supabase
         .from("items")
         .select("data")
         .eq("household_id", household.id)
         .eq("type", "transaction")
         .gte("due_at", todayStart)
-        .lte("due_at", todayEnd),
-      supabase
-        .from("items")
-        .select("id")
-        .eq("household_id", household.id)
-        .eq("type", "shopping")
-        .is("completed_at", null),
-    ]);
+        .lte("due_at", todayEnd)
+    : null;
 
   const initialPresence = (presenceRes.data as Presence[] | null) ?? [];
 
@@ -65,7 +72,7 @@ export default async function HomePage() {
 
   const eventsToday = todayEventsRes.data?.length ?? 0;
 
-  const txToday = (todayTxRes.data as { data: { amount?: number; kind?: "expense" | "income" } }[] | null) ?? [];
+  const txToday = (todayTxRes?.data as { data: { amount?: number; kind?: "expense" | "income" } }[] | null) ?? [];
   let spentToday = 0;
   for (const row of txToday) {
     const d = row.data;
@@ -78,12 +85,12 @@ export default async function HomePage() {
   const firstName = currentMember.display_name.split(" ")[0];
 
   return (
-    <div className="flex h-full flex-col gap-6 overflow-y-auto px-4 pt-4 pb-8">
+    <div className="flex h-full flex-col gap-7 overflow-y-auto px-4 pt-5 pb-10 sm:px-6">
       <header className="flex flex-col gap-1">
         <p className="text-muted-foreground text-sm font-medium tracking-wide">
           {getGreeting()}
         </p>
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Hola, {firstName}
         </h2>
         <p className="text-muted-foreground text-sm">
@@ -91,24 +98,33 @@ export default async function HomePage() {
         </p>
       </header>
 
+      <PresenceWidget date={today} initial={initialPresence} />
+
       <section aria-label="Resumen del día">
-        <h3 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+        <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
           Hoy
         </h3>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div
+          className={cn(
+            "grid grid-cols-2 gap-3",
+            isAdmin ? "sm:grid-cols-4" : "sm:grid-cols-3",
+          )}
+        >
           <StatTile
             href="/tasks"
             icon={CheckSquare}
             label="Tareas"
             value={tasksOpen}
             hint={tasksMine > 0 ? `${tasksMine} para ti` : "abiertas"}
+            emphasis={tasksMine > 0}
           />
           <StatTile
             href="/calendar"
             icon={CalendarDays}
             label="Eventos"
             value={eventsToday}
-            hint={eventsToday === 1 ? "hoy" : "hoy"}
+            hint="hoy"
+            emphasis={eventsToday > 0}
           />
           <StatTile
             href="/provisions"
@@ -116,24 +132,26 @@ export default async function HomePage() {
             label="Compras"
             value={shoppingOpen}
             hint={shoppingOpen === 1 ? "pendiente" : "pendientes"}
+            emphasis={shoppingOpen > 0}
           />
-          <StatTile
-            href="/finances"
-            icon={Wallet}
-            label="Gasto"
-            value={spentToday === 0 ? "—" : formatShortEUR(spentToday)}
-            hint="hoy"
-          />
+          {isAdmin && (
+            <StatTile
+              href="/finances"
+              icon={Wallet}
+              label="Gasto"
+              value={spentToday === 0 ? "—" : formatShortEUR(spentToday)}
+              hint="hoy"
+            />
+          )}
         </div>
       </section>
 
-      <PresenceWidget date={today} initial={initialPresence} />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <HomeUpcomingEvents householdId={household.id} members={members} />
+        <HomeRomaStatus householdId={household.id} members={members} />
+      </div>
 
-      <HomeUpcomingEvents householdId={household.id} members={members} />
-
-      <FinanceSummaryCard />
-
-      <HomeRomaStatus householdId={household.id} members={members} />
+      {isAdmin && <FinanceSummaryCard />}
     </div>
   );
 }
@@ -144,23 +162,33 @@ function StatTile({
   label,
   value,
   hint,
+  emphasis,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number | string;
   hint: string;
+  emphasis?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className="bg-card hover:border-primary/40 active:scale-[0.98] flex flex-col gap-2 rounded-xl border p-3 transition"
+      className={cn(
+        "bg-card hover:border-primary/40 active:scale-[0.98] flex flex-col gap-2 rounded-xl border p-4 transition",
+        emphasis && "border-primary/30 bg-primary/5",
+      )}
     >
-      <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
-        <Icon className="h-4 w-4" />
+      <div
+        className={cn(
+          "flex h-10 w-10 items-center justify-center rounded-lg",
+          emphasis ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary",
+        )}
+      >
+        <Icon className="h-5 w-5" />
       </div>
-      <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-semibold tabular-nums">{value}</span>
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-3xl font-semibold tabular-nums">{value}</span>
         <span className="text-muted-foreground text-xs">{hint}</span>
       </div>
       <span className="text-foreground text-sm font-medium">{label}</span>

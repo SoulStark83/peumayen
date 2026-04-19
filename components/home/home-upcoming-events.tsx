@@ -32,28 +32,28 @@ export async function HomeUpcomingEvents({
 
   return (
     <section aria-label="Próximos eventos">
-      <div className="mb-2 flex items-baseline justify-between">
+      <div className="mb-3 flex items-baseline justify-between">
         <h3 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           Próximos
         </h3>
-        <Link href="/calendar" className="text-primary text-xs font-medium">
-          Ver calendario
+        <Link href="/calendar" className="text-primary text-sm font-medium">
+          Ver calendario →
         </Link>
       </div>
 
       {events.length === 0 ? (
-        <div className="bg-card text-muted-foreground flex flex-col items-center gap-2 rounded-xl border p-6 text-center">
-          <CalendarDays className="text-muted-foreground/60 h-6 w-6" />
+        <div className="bg-card text-muted-foreground flex flex-col items-center gap-2 rounded-xl border p-8 text-center">
+          <CalendarDays className="text-muted-foreground/60 h-7 w-7" />
           <p className="text-sm">No hay eventos próximos.</p>
           <Link
             href="/calendar"
-            className="text-primary text-xs font-medium hover:underline"
+            className="text-primary text-sm font-medium hover:underline"
           >
             Crear uno →
           </Link>
         </div>
       ) : (
-        <ul className="bg-card flex flex-col rounded-xl border">
+        <ul className="bg-card flex flex-col overflow-hidden rounded-xl border">
           {events.map((e, idx) => {
             const data = (e.data ?? {}) as EventData;
             const ownerId = e.assigned_to ?? e.created_by;
@@ -68,14 +68,14 @@ export async function HomeUpcomingEvents({
               <li
                 key={e.id}
                 className={cn(
-                  "flex items-center gap-3 p-3",
+                  "flex items-center gap-3 p-4",
                   idx !== events.length - 1 && "border-b",
                 )}
               >
                 {owner ? (
                   <div
                     className={cn(
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold",
                       colorForName(owner.display_name),
                     )}
                     aria-hidden
@@ -83,13 +83,13 @@ export async function HomeUpcomingEvents({
                     {owner.display_name[0]?.toUpperCase()}
                   </div>
                 ) : (
-                  <div className="bg-muted text-muted-foreground flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
-                    <CalendarDays className="h-4 w-4" />
+                  <div className="bg-muted text-muted-foreground flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
+                    <CalendarDays className="h-5 w-5" />
                   </div>
                 )}
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{e.title}</p>
+                  <p className="truncate text-base font-medium">{e.title}</p>
                   <div className="text-muted-foreground mt-0.5 flex items-center gap-2 text-xs">
                     <span className="capitalize">
                       {e.due_at ? relativeDayLabel(e.due_at) : ""}

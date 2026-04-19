@@ -12,7 +12,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { ScopePicker } from "@/components/common/scope-picker";
 import { useHousehold } from "@/components/providers/household-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +22,7 @@ import {
 import { formatEUR } from "@/lib/currency";
 import { formatMonthTitle, monthKeyMadrid, shiftMonth } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
-import type { Item, ItemType, Scope } from "@/lib/types";
+import type { Item, ItemType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type TxData = {
@@ -97,7 +96,6 @@ export function SummaryTab({
   });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerYear, setPickerYear] = useState(cursor.year);
-  const [scopeFilter, setScopeFilter] = useState<Scope | "all">("all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const monthKey = monthKeyOf(cursor.year, cursor.month0);
@@ -201,12 +199,6 @@ export function SummaryTab({
     };
   }, [household.id, instanceId]);
 
-  const filteredItems = useMemo(() => {
-    return items.filter((i) =>
-      scopeFilter === "all" ? true : i.scope === scopeFilter,
-    );
-  }, [items, scopeFilter]);
-
   // Monthly totals for the current cursor month.
   const { income, expense, expenseByCat, transferCount } = useMemo(() => {
     let income = 0;
@@ -216,7 +208,7 @@ export function SummaryTab({
       string,
       { total: number; subs: Map<string, number>; count: number }
     >();
-    for (const i of filteredItems) {
+    for (const i of items) {
       if (!i.due_at || monthKeyMadrid(i.due_at) !== monthKey) continue;
       const d = i.data as TxData;
       if (!d) continue;
@@ -253,7 +245,7 @@ export function SummaryTab({
       }))
       .sort((a, b) => b.total - a.total);
     return { income, expense, expenseByCat, transferCount };
-  }, [filteredItems, monthKey]);
+  }, [items, monthKey]);
 
   // 12-month trend (ending at cursor).
   const trend = useMemo(() => {
@@ -275,7 +267,7 @@ export function SummaryTab({
       });
     }
     const byKey = new Map(months.map((m) => [m.key, m]));
-    for (const i of filteredItems) {
+    for (const i of items) {
       if (!i.due_at) continue;
       const mk = monthKeyMadrid(i.due_at);
       const m = byKey.get(mk);
@@ -287,7 +279,7 @@ export function SummaryTab({
       else m.expense += amount;
     }
     return months;
-  }, [filteredItems, cursor.year, cursor.month0]);
+  }, [items, cursor.year, cursor.month0]);
 
   const trendMax = useMemo(
     () => Math.max(1, ...trend.map((m) => Math.max(m.income, m.expense))),
@@ -313,7 +305,7 @@ export function SummaryTab({
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <div className="border-b">
-        <div className="flex items-center justify-between px-3 py-2">
+        <div className="flex items-center justify-center px-3 py-2">
           <div className="flex items-center gap-1">
             <Button
               type="button"
@@ -402,17 +394,11 @@ export function SummaryTab({
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-          <ScopePicker
-            value={scopeFilter}
-            onChange={setScopeFilter}
-            allOption
-            size="sm"
-          />
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-3 py-4 pb-8">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-4 pb-8">
           {/* KPI row */}
           <div className="grid grid-cols-3 gap-2">
             <Kpi

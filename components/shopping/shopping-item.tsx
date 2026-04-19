@@ -72,7 +72,7 @@ export function ShoppingItem({ item }: { item: Item }) {
   return (
     <li
       className={cn(
-        "bg-card flex items-center gap-3 rounded-lg border p-3 transition",
+        "bg-card flex items-center gap-3 rounded-xl border p-4 transition",
         completed && "opacity-60",
         busy && "pointer-events-none opacity-50",
       )}
@@ -80,33 +80,36 @@ export function ShoppingItem({ item }: { item: Item }) {
       <Checkbox
         checked={completed}
         onCheckedChange={toggle}
+        className="size-5"
         aria-label={completed ? "Quitar marca" : "Marcar comprado"}
       />
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <p className={cn("truncate text-sm font-medium", completed && "line-through")}>
+        <div className="flex items-baseline gap-2">
+          <p className={cn("truncate text-base font-medium", completed && "line-through")}>
             {item.title}
           </p>
           {data.quantity && (
-            <span className="text-muted-foreground shrink-0 text-xs">
+            <span className="text-muted-foreground shrink-0 text-sm tabular-nums">
               · {data.quantity}
             </span>
           )}
         </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-          <Badge
-            variant="outline"
-            className={cn("text-xs", scopeStyle.badge)}
-          >
-            {scopeStyle.label}
-          </Badge>
-          {data.category && (
-            <span className="text-muted-foreground text-xs">
-              {data.category}
-            </span>
-          )}
-        </div>
+        {(data.category || item.scope !== "family") && (
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            <Badge
+              variant="outline"
+              className={cn("text-xs", scopeStyle.badge)}
+            >
+              {scopeStyle.label}
+            </Badge>
+            {data.category && (
+              <span className="text-muted-foreground text-xs">
+                {data.category}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {completed && (
@@ -116,7 +119,7 @@ export function ShoppingItem({ item }: { item: Item }) {
           size="icon"
           onClick={moveToPantry}
           disabled={busy}
-          className="text-muted-foreground hover:text-primary h-8 w-8"
+          className="text-muted-foreground hover:text-primary h-9 w-9"
           aria-label="Mover a despensa"
           title="Mover a despensa"
         >
@@ -130,7 +133,7 @@ export function ShoppingItem({ item }: { item: Item }) {
         size="icon"
         onClick={remove}
         disabled={busy}
-        className="text-muted-foreground hover:text-destructive h-8 w-8"
+        className="text-muted-foreground/60 hover:text-destructive h-9 w-9"
         aria-label="Borrar"
       >
         <Trash2 className="h-4 w-4" />

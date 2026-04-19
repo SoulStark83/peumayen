@@ -1,5 +1,6 @@
 "use client";
 
+import { useCurrentMember } from "@/components/providers/household-provider";
 import { SCOPE_STYLES } from "@/lib/colors";
 import type { Scope } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -17,7 +18,12 @@ export function ScopePicker({
   allOption?: boolean;
   size?: "sm" | "default";
 }) {
-  const options: Array<Scope | "all"> = allOption ? ["all", ...SCOPES] : SCOPES;
+  const currentMember = useCurrentMember();
+  const visibleScopes: Scope[] =
+    currentMember.role === "admin" ? SCOPES : SCOPES.filter((s) => s !== "couple");
+  const options: Array<Scope | "all"> = allOption
+    ? ["all", ...visibleScopes]
+    : visibleScopes;
 
   return (
     <div

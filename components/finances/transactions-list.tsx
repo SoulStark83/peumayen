@@ -2,7 +2,6 @@
 
 import { CalendarDays, ChevronLeft, ChevronRight, Loader2, Plus, Wallet } from "lucide-react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { ScopePicker } from "@/components/common/scope-picker";
 import { useHousehold } from "@/components/providers/household-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +12,7 @@ import {
 import { formatEUR } from "@/lib/currency";
 import { formatMonthTitle, monthBounds, monthKeyMadrid, shiftMonth } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
-import type { Item, ItemType, Scope } from "@/lib/types";
+import type { Item, ItemType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { TransactionFormDialog } from "./transaction-form-dialog";
 import { TransactionRow } from "./transaction-row";
@@ -60,7 +59,6 @@ export function TransactionsList({
   });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerYear, setPickerYear] = useState(cursor.year);
-  const [scopeFilter, setScopeFilter] = useState<Scope | "all">("all");
   const [formOpen, setFormOpen] = useState(false);
 
   const monthKey = `${cursor.year}-${String(cursor.month0 + 1).padStart(2, "0")}`;
@@ -146,12 +144,9 @@ export function TransactionsList({
   }, [household.id, instanceId]);
 
   const { rows, income, expense } = useMemo(() => {
-    const filtered = items.filter((i) => {
-      if (!i.due_at) return false;
-      if (monthKeyMadrid(i.due_at) !== monthKey) return false;
-      if (scopeFilter !== "all" && i.scope !== scopeFilter) return false;
-      return true;
-    });
+    const filtered = items.filter(
+      (i) => i.due_at && monthKeyMadrid(i.due_at) === monthKey,
+    );
     filtered.sort((a, b) => (b.due_at ?? "").localeCompare(a.due_at ?? ""));
 
     let income = 0;
@@ -163,7 +158,7 @@ export function TransactionsList({
       else expense += Math.abs(d.amount);
     }
     return { rows: filtered, income, expense };
-  }, [items, monthKey, scopeFilter]);
+  }, [items, monthKey]);
 
   const balance = income - expense;
 
@@ -275,41 +270,36 @@ export function TransactionsList({
           </Button>
         </div>
 
-        <div className="flex items-center justify-between gap-2 px-3 pb-3">
-          <ScopePicker
-            value={scopeFilter}
-            onChange={setScopeFilter}
-            allOption
-            size="sm"
+        <div className="mx-auto grid w-full max-w-3xl grid-cols-3 gap-2 px-4 pb-3">
+          <MiniKpi label="Ingresos" value={formatEUR(income, true)} tone="pos" />
+          <MiniKpi label="Gastos" value={formatEUR(expense, true)} tone="neg" />
+          <MiniKpi
+            label="Balance"
+            value={formatEUR(balance, true)}
+            tone={balance >= 0 ? "pos" : "neg"}
+            emphasis
           />
-          <div className="flex items-center gap-3 text-xs tabular-nums">
-            <span className="text-emerald-600">+{formatEUR(income, true)}</span>
-            <span className="text-rose-600">−{formatEUR(expense, true)}</span>
-            <span
-              className={cn(
-                "font-semibold",
-                balance >= 0 ? "text-emerald-700" : "text-rose-700",
-              )}
-            >
-              {formatEUR(balance, true)}
-            </span>
-          </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl px-3 py-3 pb-6">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4 pb-6">
           {loading && rows.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />
               <p className="text-muted-foreground text-sm">Cargando…</p>
             </div>
           ) : rows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-              <Wallet className="text-muted-foreground h-8 w-8" />
-              <p className="text-muted-foreground text-sm">
-                Sin movimientos este mes.
-              </p>
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+              <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
+                <Wallet className="h-7 w-7" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium">Mes en blanco</p>
+                <p className="text-muted-foreground text-sm">
+                  Sin movimientos registrados este mes.
+                </p>
+              </div>
             </div>
           ) : (
             <ul className="flex flex-col gap-2">
@@ -322,6 +312,39 @@ export function TransactionsList({
       </div>
 
       <TransactionFormDialog open={formOpen} onOpenChange={setFormOpen} />
+    </div>
+  );
+}
+
+function MiniKpi({
+  label,
+  value,
+  tone,
+  emphasis,
+}: {
+  label: string;
+  value: string;
+  tone: "pos" | "neg";
+  emphasis?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-card flex flex-col gap-0.5 rounded-lg border px-3 py-2",
+        emphasis && "border-primary/30",
+      )}
+    >
+      <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
+        {label}
+      </span>
+      <span
+        className={cn(
+          "text-base font-semibold tabular-nums",
+          tone === "pos" ? "text-emerald-600" : "text-rose-600",
+        )}
+      >
+        {value}
+      </span>
     </div>
   );
 }

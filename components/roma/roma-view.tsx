@@ -35,21 +35,21 @@ export function RomaView({
         <div className="flex items-center justify-center border-b px-3 py-2">
           <TabsList>
             <TabsTrigger value="walks" className="gap-1.5">
-              <Footprints className="h-3.5 w-3.5" />
+              <Footprints className="h-4 w-4" />
               Paseos
             </TabsTrigger>
             <TabsTrigger value="weight" className="gap-1.5">
-              <Scale className="h-3.5 w-3.5" />
+              <Scale className="h-4 w-4" />
               Peso
             </TabsTrigger>
             <TabsTrigger value="vet" className="gap-1.5">
-              <Stethoscope className="h-3.5 w-3.5" />
+              <Stethoscope className="h-4 w-4" />
               Vet
             </TabsTrigger>
           </TabsList>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-2xl p-4 pb-6">
+          <div className="mx-auto w-full max-w-3xl p-4 pb-6">
             <TabsContent value="walks" className="mt-0">
               <WalksLog initial={initialWalks} />
             </TabsContent>

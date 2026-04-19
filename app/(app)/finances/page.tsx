@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { FinancesView } from "@/components/finances/finances-view";
 import { requireHouseholdContext } from "@/lib/auth";
 import { monthBounds, shiftMonth } from "@/lib/date";
@@ -12,7 +13,8 @@ const ITEM_COLUMNS =
   "id, household_id, project_id, type, scope, title, description, data, due_at, completed_at, recurrence, created_by, assigned_to, created_at, updated_at";
 
 export default async function FinancesPage() {
-  const { household } = await requireHouseholdContext();
+  const { household, currentMember } = await requireHouseholdContext();
+  if (currentMember.role !== "admin") redirect("/");
   const supabase = await createClient();
 
   const now = new Date();

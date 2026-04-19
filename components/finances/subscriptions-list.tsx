@@ -4,9 +4,7 @@ import { Plus, Repeat, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useHousehold } from "@/components/providers/household-provider";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SCOPE_STYLES } from "@/lib/colors";
 import { formatEUR } from "@/lib/currency";
 import { useRealtimeItems } from "@/lib/hooks/use-realtime-items";
 import { createClient } from "@/lib/supabase/client";
@@ -42,12 +40,12 @@ export function SubscriptionsList({ initial }: { initial: Item[] }) {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b px-3 py-2">
+      <div className="flex items-center justify-between border-b px-4 py-3">
         <div>
-          <p className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+          <p className="text-[11px] font-semibold tracking-wider uppercase text-muted-foreground">
             Equivalente mensual
           </p>
-          <p className="text-base font-semibold tabular-nums">
+          <p className="text-xl font-semibold tabular-nums">
             {formatEUR(monthlyTotal)}
           </p>
         </div>
@@ -63,7 +61,7 @@ export function SubscriptionsList({ initial }: { initial: Item[] }) {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl px-3 py-3 pb-6">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4 pb-6">
           {rows.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <Repeat className="text-muted-foreground h-8 w-8" />
@@ -89,7 +87,6 @@ export function SubscriptionsList({ initial }: { initial: Item[] }) {
 function SubscriptionRow({ item }: { item: Item }) {
   const [busy, setBusy] = useState(false);
   const data = (item.data as SubData) ?? { amount: 0, cadence: "monthly", billing_day: 1 };
-  const scopeStyle = SCOPE_STYLES[item.scope];
 
   async function remove() {
     if (busy) return;
@@ -103,30 +100,27 @@ function SubscriptionRow({ item }: { item: Item }) {
   return (
     <li
       className={cn(
-        "bg-card flex items-center gap-3 rounded-lg border p-3",
+        "bg-card flex items-center gap-3 rounded-xl border p-4",
         busy && "pointer-events-none opacity-50",
       )}
     >
       <div
-        className="bg-muted flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+        className="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
         aria-hidden
       >
-        <Repeat className="h-4 w-4" />
+        <Repeat className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
-          <p className="truncate text-sm font-medium">{item.title}</p>
-          <p className="shrink-0 text-sm font-semibold tabular-nums">
+          <p className="truncate text-base font-medium">{item.title}</p>
+          <p className="shrink-0 text-base font-semibold tabular-nums">
             {formatEUR(data.amount)}
           </p>
         </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
           <span className="text-muted-foreground">
             {data.cadence === "yearly" ? "Anual" : "Mensual"} · día {data.billing_day}
           </span>
-          <Badge variant="outline" className={cn("text-xs", scopeStyle.badge)}>
-            {scopeStyle.label}
-          </Badge>
         </div>
       </div>
       <Button
@@ -135,7 +129,7 @@ function SubscriptionRow({ item }: { item: Item }) {
         size="icon"
         onClick={remove}
         disabled={busy}
-        className="text-muted-foreground hover:text-destructive h-8 w-8 shrink-0"
+        className="text-muted-foreground/60 hover:text-destructive h-9 w-9 shrink-0"
         aria-label="Borrar"
       >
         <Trash2 className="h-4 w-4" />

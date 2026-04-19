@@ -58,11 +58,11 @@ export function TasksView({
         <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
           <TabsList>
             <TabsTrigger value="task" className="gap-1.5">
-              <CheckSquare className="h-3.5 w-3.5" />
+              <CheckSquare className="h-4 w-4" />
               Tareas
             </TabsTrigger>
             <TabsTrigger value="note" className="gap-1.5">
-              <StickyNote className="h-3.5 w-3.5" />
+              <StickyNote className="h-4 w-4" />
               Notas
             </TabsTrigger>
           </TabsList>
@@ -87,7 +87,7 @@ export function TasksView({
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-2xl px-3 pb-6">
+          <div className="mx-auto w-full max-w-3xl px-4 pb-6">
             <TabsContent value="task" className="mt-0">
               {filteredTasks.pending.length === 0 && filteredTasks.done.length === 0 ? (
                 <EmptyState kind="task" />
@@ -95,7 +95,7 @@ export function TasksView({
                 <>
                   <ul className="flex flex-col gap-2">
                     {filteredTasks.pending.map((t) => (
-                      <TaskItem key={t.id} item={t} />
+                      <TaskItem key={t.id} item={t} hideScope={scopeFilter !== "all"} />
                     ))}
                   </ul>
                   {filteredTasks.done.length > 0 && (
@@ -111,7 +111,7 @@ export function TasksView({
                       {showCompleted && (
                         <ul className="flex flex-col gap-2">
                           {filteredTasks.done.map((t) => (
-                            <TaskItem key={t.id} item={t} />
+                            <TaskItem key={t.id} item={t} hideScope={scopeFilter !== "all"} />
                           ))}
                         </ul>
                       )}
@@ -127,7 +127,7 @@ export function TasksView({
               ) : (
                 <ul className="flex flex-col gap-2">
                   {filteredNotes.map((n) => (
-                    <NoteItem key={n.id} item={n} />
+                    <NoteItem key={n.id} item={n} hideScope={scopeFilter !== "all"} />
                   ))}
                 </ul>
               )}
@@ -142,18 +142,22 @@ export function TasksView({
 }
 
 function EmptyState({ kind }: { kind: Kind }) {
+  const Icon = kind === "task" ? CheckSquare : StickyNote;
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-      {kind === "task" ? (
-        <CheckSquare className="text-muted-foreground h-8 w-8" />
-      ) : (
-        <StickyNote className="text-muted-foreground h-8 w-8" />
-      )}
-      <p className="text-muted-foreground text-sm">
-        {kind === "task"
-          ? "Nada pendiente en este ámbito."
-          : "Sin notas todavía en este ámbito."}
-      </p>
+    <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+      <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
+        <Icon className="h-7 w-7" />
+      </div>
+      <div className="flex flex-col gap-1">
+        <p className="text-base font-medium">
+          {kind === "task" ? "Todo al día" : "Aún no hay notas"}
+        </p>
+        <p className="text-muted-foreground text-sm">
+          {kind === "task"
+            ? "Nada pendiente por aquí. Disfruta."
+            : "Guarda lo que no quieras olvidar."}
+        </p>
+      </div>
     </div>
   );
 }

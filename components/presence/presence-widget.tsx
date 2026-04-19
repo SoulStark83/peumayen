@@ -80,12 +80,12 @@ export function PresenceWidget({
   }
 
   return (
-    <div className="bg-card flex flex-col gap-3 rounded-xl border p-4">
+    <div className="bg-card flex flex-col gap-4 rounded-xl border p-5">
       <div className="flex items-baseline justify-between">
-        <h3 className="text-sm font-semibold">Hoy en casa</h3>
+        <h3 className="text-base font-semibold">Hoy en casa</h3>
         <p className="text-muted-foreground text-xs">Toca para cambiar</p>
       </div>
-      <ul className="flex flex-wrap gap-3">
+      <ul className="flex flex-wrap gap-4">
         {members.map((m) => {
           const status: PresenceStatus = byMember.get(m.id)?.status ?? "uncertain";
           const meta = STATUS_META[status];
@@ -104,19 +104,20 @@ export function PresenceWidget({
                 )}
                 aria-label={`${m.display_name}: ${meta.label}. Cambiar estado.`}
               >
-                <Avatar className="h-12 w-12">
+                <Avatar className="h-14 w-14">
                   {m.avatar_url && <AvatarImage src={m.avatar_url} alt={m.display_name} />}
-                  <AvatarFallback className={cn("text-sm", colorForName(m.display_name))}>
+                  <AvatarFallback className={cn("text-base font-semibold", colorForName(m.display_name))}>
                     {initialsFor(m.display_name)}
                   </AvatarFallback>
                 </Avatar>
                 <span
                   className={cn(
-                    "absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-card",
+                    "absolute -right-1 -bottom-1 flex h-5.5 w-5.5 items-center justify-center rounded-full border-2 border-card",
                     status === "home" && "bg-emerald-500",
                     status === "away" && "bg-neutral-400",
                     status === "uncertain" && "bg-amber-500",
                   )}
+                  style={{ height: "1.4rem", width: "1.4rem" }}
                   aria-hidden
                 >
                   <Icon className="h-3 w-3 text-white" />
@@ -124,7 +125,7 @@ export function PresenceWidget({
               </button>
               <span
                 className={cn(
-                  "max-w-[4.5rem] truncate text-xs font-medium",
+                  "max-w-[5rem] truncate text-xs font-medium",
                   isCurrent ? "text-foreground" : "text-muted-foreground",
                 )}
               >

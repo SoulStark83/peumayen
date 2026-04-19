@@ -67,11 +67,18 @@ export function ShoppingList({ initial }: { initial: Item[] }) {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl px-3 py-3 pb-6">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4 pb-6">
           {pending.length === 0 && done.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-              <ShoppingCart className="text-muted-foreground h-8 w-8" />
-              <p className="text-muted-foreground text-sm">Lista vacía.</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+              <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
+                <ShoppingCart className="h-7 w-7" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium">Lista vacía</p>
+                <p className="text-muted-foreground text-sm">
+                  Añade lo que haya que comprar.
+                </p>
+              </div>
             </div>
           ) : (
             <>

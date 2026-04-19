@@ -49,7 +49,7 @@ export function MonthGrid({
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <div className="text-sm font-medium">{formatMonthTitle(year, month0)}</div>
+        <div className="text-base font-semibold">{formatMonthTitle(year, month0)}</div>
         <Button
           type="button"
           variant="ghost"
@@ -61,9 +61,9 @@ export function MonthGrid({
         </Button>
       </div>
 
-      <div className="text-muted-foreground grid grid-cols-7 gap-1 px-1 pb-1 text-xs font-medium uppercase">
+      <div className="text-muted-foreground grid grid-cols-7 gap-1 px-1 pb-1 text-xs font-semibold uppercase tracking-wider">
         {WEEKDAY_LABELS.map((d) => (
-          <div key={d} className="flex h-5 items-center justify-center">
+          <div key={d} className="flex h-6 items-center justify-center">
             {d}
           </div>
         ))}
@@ -82,11 +82,11 @@ export function MonthGrid({
               type="button"
               onClick={() => onSelect(key, d)}
               className={cn(
-                "relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition",
+                "relative flex aspect-square flex-col items-center justify-center rounded-lg text-base transition",
                 "hover:bg-accent",
                 !inMonth && "text-muted-foreground/50",
-                selected && "bg-primary text-primary-foreground hover:bg-primary/90",
-                !selected && today && "ring-primary ring-1",
+                selected && "bg-primary text-primary-foreground hover:bg-primary/90 font-semibold",
+                !selected && today && "ring-primary ring-2 font-semibold",
               )}
               aria-pressed={selected}
             >

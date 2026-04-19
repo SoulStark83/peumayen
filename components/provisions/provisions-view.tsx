@@ -25,11 +25,11 @@ export function ProvisionsView({
       <div className="flex items-center justify-center border-b px-3 py-2">
         <TabsList>
           <TabsTrigger value="shopping" className="gap-1.5">
-            <ShoppingCart className="h-3.5 w-3.5" />
+            <ShoppingCart className="h-4 w-4" />
             Compras
           </TabsTrigger>
           <TabsTrigger value="pantry" className="gap-1.5">
-            <Archive className="h-3.5 w-3.5" />
+            <Archive className="h-4 w-4" />
             Despensa
           </TabsTrigger>
         </TabsList>

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ScopePicker } from "@/components/common/scope-picker";
 import {
   useCurrentMember,
   useHousehold,
@@ -26,7 +25,6 @@ import {
 } from "@/components/ui/select";
 import { parseAmount } from "@/lib/currency";
 import { createClient } from "@/lib/supabase/client";
-import type { Scope } from "@/lib/types";
 
 type Cadence = "monthly" | "yearly";
 
@@ -43,7 +41,6 @@ export function SubscriptionFormDialog({
   const [amount, setAmount] = useState("");
   const [cadence, setCadence] = useState<Cadence>("monthly");
   const [billingDay, setBillingDay] = useState("1");
-  const [scope, setScope] = useState<Scope>("family");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -52,7 +49,6 @@ export function SubscriptionFormDialog({
       setAmount("");
       setCadence("monthly");
       setBillingDay("1");
-      setScope("family");
     }
   }, [open]);
 
@@ -74,7 +70,7 @@ export function SubscriptionFormDialog({
     const { error } = await supabase.from("items").insert({
       household_id: household.id,
       type: "subscription",
-      scope,
+      scope: "couple",
       title: title.trim(),
       created_by: currentMember.id,
       data: {
@@ -144,10 +140,6 @@ export function SubscriptionFormDialog({
               onChange={(e) => setBillingDay(e.target.value)}
               required
             />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label>Ámbito</Label>
-            <ScopePicker value={scope} onChange={(v) => setScope(v as Scope)} />
           </div>
           <DialogFooter className="mt-2">
             <Button

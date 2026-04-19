@@ -29,15 +29,15 @@ export function FinancesView({
       <div className="flex items-center justify-center border-b px-3 py-2">
         <TabsList>
           <TabsTrigger value="transactions" className="gap-1.5">
-            <Wallet className="h-3.5 w-3.5" />
+            <Wallet className="h-4 w-4" />
             Movimientos
           </TabsTrigger>
           <TabsTrigger value="summary" className="gap-1.5">
-            <PieChart className="h-3.5 w-3.5" />
+            <PieChart className="h-4 w-4" />
             Resumen
           </TabsTrigger>
           <TabsTrigger value="subscriptions" className="gap-1.5">
-            <Repeat className="h-3.5 w-3.5" />
+            <Repeat className="h-4 w-4" />
             Suscripciones
           </TabsTrigger>
         </TabsList>

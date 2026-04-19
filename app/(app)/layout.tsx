@@ -14,7 +14,7 @@ export default async function AppLayout({
     <HouseholdProvider household={household} currentMember={currentMember} members={members}>
       <div className="grid h-dvh grid-rows-[auto_1fr_auto]">
         <TopHeader />
-        <main className="mx-auto w-full max-w-2xl overflow-hidden">{children}</main>
+        <main className="mx-auto w-full max-w-5xl overflow-hidden">{children}</main>
         <BottomNav />
       </div>
     </HouseholdProvider>

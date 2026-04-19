@@ -84,7 +84,7 @@ export function PantryList({ initial }: { initial: Item[] }) {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-2xl px-3 py-3 pb-6">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4 pb-6">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <Archive className="text-muted-foreground h-8 w-8" />

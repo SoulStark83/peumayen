@@ -37,25 +37,25 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.008 85);
-  --foreground: oklch(0.96 0.006 85);
-  --card: oklch(0.22 0.009 85);
-  --card-foreground: oklch(0.96 0.006 85);
-  --popover: oklch(0.22 0.009 85);
-  --popover-foreground: oklch(0.96 0.006 85);
-  --primary: oklch(0.72 0.10 155);
-  --primary-foreground: oklch(0.18 0.020 155);
-  --secondary: oklch(0.28 0.010 85);
-  --secondary-foreground: oklch(0.96 0.006 85);
-  --muted: oklch(0.28 0.010 85);
-  --muted-foreground: oklch(0.72 0.010 85);
-  --accent: oklch(0.32 0.025 150);
-  --accent-foreground: oklch(0.92 0.025 150);
-  --destructive: oklch(0.62 0.19 28);
-  --destructive-foreground: oklch(0.96 0.006 85);
-  --border: oklch(0.30 0.012 85 / 60%);
-  --input: oklch(0.30 0.012 85 / 80%);
-  --ring: oklch(0.65 0.10 155);
+  --background: oklch(0.20 0.014 65);
+  --foreground: oklch(0.96 0.008 75);
+  --card: oklch(0.24 0.016 65);
+  --card-foreground: oklch(0.96 0.008 75);
+  --popover: oklch(0.24 0.016 65);
+  --popover-foreground: oklch(0.96 0.008 75);
+  --primary: oklch(0.74 0.11 155);
+  --primary-foreground: oklch(0.19 0.022 155);
+  --secondary: oklch(0.30 0.018 65);
+  --secondary-foreground: oklch(0.96 0.008 75);
+  --muted: oklch(0.30 0.018 65);
+  --muted-foreground: oklch(0.74 0.014 75);
+  --accent: oklch(0.34 0.030 150);
+  --accent-foreground: oklch(0.92 0.028 150);
+  --destructive: oklch(0.64 0.19 28);
+  --destructive-foreground: oklch(0.96 0.008 75);
+  --border: oklch(0.34 0.020 65 / 60%);
+  --input: oklch(0.34 0.020 65 / 80%);
+  --ring: oklch(0.66 0.11 155);
 
   --member-1: oklch(0.68 0.11 150);
   --member-2: oklch(0.72 0.12 75);
@@ -109,8 +109,19 @@
   * {
     @apply border-border;
   }
+  html {
+    font-size: 16px;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Evita tap highlight gris en móvil para botones */
+  button, [role="button"], a {
+    -webkit-tap-highlight-color: transparent;
   }
 }
