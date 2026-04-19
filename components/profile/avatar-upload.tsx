@@ -4,36 +4,14 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { AvatarCropperDialog } from "@/components/profile/avatar-cropper-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { colorForName, initialsFor } from "@/lib/colors";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-const MAX_DIMENSION = 512;
 const OUTPUT_MIME = "image/webp";
-const OUTPUT_QUALITY = 0.85;
-
-async function resizeToWebp(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file);
-  const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
-  const w = Math.round(bitmap.width * scale);
-  const h = Math.round(bitmap.height * scale);
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("No se pudo procesar la imagen");
-  ctx.drawImage(bitmap, 0, 0, w, h);
-  bitmap.close?.();
-  return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("No se pudo convertir la imagen"))),
-      OUTPUT_MIME,
-      OUTPUT_QUALITY,
-    );
-  });
-}
 
 function extractStoragePath(publicUrl: string | null): string | null {
   if (!publicUrl) return null;
@@ -55,8 +33,9 @@ export function AvatarUpload({
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [picked, setPicked] = useState<File | null>(null);
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
@@ -64,9 +43,12 @@ export function AvatarUpload({
       toast.error("Tiene que ser una imagen");
       return;
     }
+    setPicked(file);
+  }
+
+  async function uploadBlob(blob: Blob) {
     setBusy(true);
     try {
-      const blob = await resizeToWebp(file);
       const supabase = createClient();
       const path = `${memberId}/${crypto.randomUUID()}.webp`;
       const { error: upErr } = await supabase.storage
@@ -89,6 +71,7 @@ export function AvatarUpload({
       }
 
       toast.success("Foto actualizada");
+      setPicked(null);
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "No se pudo subir la foto";
@@ -186,9 +169,17 @@ export function AvatarUpload({
         ref={fileRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        capture="user"
-        onChange={handleFile}
+        onChange={onPick}
         className="hidden"
+      />
+
+      <AvatarCropperDialog
+        open={picked !== null}
+        file={picked}
+        onCancel={() => {
+          if (!busy) setPicked(null);
+        }}
+        onConfirm={uploadBlob}
       />
     </div>
   );
