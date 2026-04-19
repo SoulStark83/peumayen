@@ -13,17 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentMember, useHousehold } from "@/components/providers/household-provider";
 import { createClient } from "@/lib/supabase/client";
-import type { Scope } from "@/lib/types";
 
 type Props = {
   open: boolean;
@@ -42,7 +34,6 @@ export function EventFormDialog({ open, onOpenChange, defaultDateKey }: Props) {
   const [endTime, setEndTime] = useState("10:00");
   const [allDay, setAllDay] = useState(false);
   const [location, setLocation] = useState("");
-  const [scope, setScope] = useState<Scope>("family");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -54,7 +45,6 @@ export function EventFormDialog({ open, onOpenChange, defaultDateKey }: Props) {
       setEndTime("10:00");
       setAllDay(false);
       setLocation("");
-      setScope("family");
     }
   }, [open, defaultDateKey]);
 
@@ -76,7 +66,7 @@ export function EventFormDialog({ open, onOpenChange, defaultDateKey }: Props) {
     const { error } = await supabase.from("items").insert({
       household_id: household.id,
       type: "event",
-      scope,
+      scope: "family",
       title: title.trim(),
       description: description.trim() || null,
       due_at: startAt,
@@ -170,20 +160,6 @@ export function EventFormDialog({ open, onOpenChange, defaultDateKey }: Props) {
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Opcional"
             />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label>Ámbito</Label>
-            <Select value={scope} onValueChange={(v) => setScope(v as Scope)}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="family">Familia</SelectItem>
-                <SelectItem value="couple">Pareja</SelectItem>
-                <SelectItem value="personal">Personal</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="flex flex-col gap-1.5">

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ScopePicker } from "@/components/common/scope-picker";
 import {
   useCurrentMember,
   useHousehold,
@@ -18,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import type { Scope } from "@/lib/types";
 
 export function ShoppingFormDialog({
   open,
@@ -34,7 +32,6 @@ export function ShoppingFormDialog({
   const [title, setTitle] = useState(defaultTitle);
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState("");
-  const [scope, setScope] = useState<Scope>("family");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -42,7 +39,6 @@ export function ShoppingFormDialog({
       setTitle(defaultTitle);
       setQuantity("");
       setCategory("");
-      setScope("family");
     }
   }, [open, defaultTitle]);
 
@@ -54,7 +50,7 @@ export function ShoppingFormDialog({
     const { error } = await supabase.from("items").insert({
       household_id: household.id,
       type: "shopping",
-      scope,
+      scope: "family",
       title: title.trim(),
       created_by: currentMember.id,
       data: {
@@ -108,10 +104,6 @@ export function ShoppingFormDialog({
                 placeholder="Frutería…"
               />
             </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label>Ámbito</Label>
-            <ScopePicker value={scope} onChange={(v) => setScope(v as Scope)} />
           </div>
           <DialogFooter className="mt-2">
             <Button

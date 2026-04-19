@@ -20,14 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ScopePicker } from "@/components/common/scope-picker";
 import {
   useCurrentMember,
   useHousehold,
   useMembers,
 } from "@/components/providers/household-provider";
 import { createClient } from "@/lib/supabase/client";
-import type { Scope } from "@/lib/types";
 
 const UNASSIGNED = "__unassigned";
 
@@ -45,7 +43,6 @@ export function TaskFormDialog({
   const members = useMembers();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [scope, setScope] = useState<Scope>("family");
   const [assignedTo, setAssignedTo] = useState<string>(UNASSIGNED);
   const [dueDate, setDueDate] = useState<string>("");
   const [saving, setSaving] = useState(false);
@@ -54,7 +51,6 @@ export function TaskFormDialog({
     if (open) {
       setTitle("");
       setDescription("");
-      setScope("family");
       setAssignedTo(UNASSIGNED);
       setDueDate("");
     }
@@ -69,7 +65,7 @@ export function TaskFormDialog({
     const { error } = await supabase.from("items").insert({
       household_id: household.id,
       type: kind,
-      scope,
+      scope: "family",
       title: title.trim(),
       description: description.trim() || null,
       due_at: kind === "task" && dueDate ? `${dueDate}T23:59:00` : null,
@@ -111,11 +107,6 @@ export function TaskFormDialog({
               required
               autoFocus
             />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label>Ámbito</Label>
-            <ScopePicker value={scope} onChange={(v) => setScope(v as Scope)} />
           </div>
 
           {kind === "task" && (
