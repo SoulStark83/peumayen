@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { MembersAdminCard } from "@/components/profile/members-admin-card";
 import { PasswordChangeCard } from "@/components/profile/password-change-card";
 import { requireHouseholdContext } from "@/lib/auth";
@@ -36,28 +37,17 @@ export default async function MePage() {
       </section>
 
       <Card>
-        <CardHeader className="flex flex-row items-center gap-4 space-y-0">
-          <Avatar className="h-14 w-14">
-            {currentMember.avatar_url && (
-              <AvatarImage
-                src={currentMember.avatar_url}
-                alt={currentMember.display_name}
-              />
-            )}
-            <AvatarFallback
-              className={cn(
-                "text-base font-semibold",
-                colorForName(currentMember.display_name),
-              )}
-            >
-              {initialsFor(currentMember.display_name)}
-            </AvatarFallback>
-          </Avatar>
+        <CardHeader className="space-y-3">
+          <AvatarUpload
+            memberId={currentMember.id}
+            displayName={currentMember.display_name}
+            avatarUrl={currentMember.avatar_url}
+          />
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-lg">
               {currentMember.display_name}
             </CardTitle>
-            <CardDescription className="flex flex-wrap gap-1">
+            <CardDescription className="mt-1 flex flex-wrap gap-1">
               <Badge variant="secondary">
                 {currentMember.role === "admin" ? "Administrador" : "Miembro"}
               </Badge>
