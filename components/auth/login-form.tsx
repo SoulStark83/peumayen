@@ -24,7 +24,7 @@ export function LoginForm() {
 
     if (authError) {
       setSubmitting(false);
-      setError("Usuario o contraseña incorrectos.");
+      setError("Hmm, ese usuario o contraseña no coinciden.");
       return;
     }
 
@@ -34,58 +34,87 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="w-full max-w-sm space-y-5">
-      <div className="space-y-1 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight">Peumayen</h1>
-        <p className="text-muted-foreground text-sm">Entrar a casa.</p>
+    <form onSubmit={onSubmit} className="w-full max-w-sm">
+      {/* Branding emocional */}
+      <div className="mb-10 flex flex-col items-center gap-3 text-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/12 text-5xl shadow-sm">
+          🏡
+        </div>
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black tracking-tight">Peumayen</h1>
+          <p className="text-muted-foreground text-base">
+            Tu familia te espera.
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="username" className="text-sm font-medium">
-          Usuario
-        </label>
-        <input
-          id="username"
-          name="username"
-          autoComplete="username"
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          required
-          pattern="^[a-zA-Z0-9_]{3,20}$"
-          title="Entre 3 y 20 caracteres: letras, números o guión bajo."
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="border-input bg-background focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm outline-none focus-visible:ring-2"
-        />
+      {/* Campos */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="username" className="text-sm font-semibold">
+            Usuario
+          </label>
+          <input
+            id="username"
+            name="username"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+            pattern="^[a-zA-Z0-9_]{3,20}$"
+            title="Entre 3 y 20 caracteres: letras, números o guión bajo."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="tu_nombre"
+            className="border-input bg-card focus-visible:ring-primary/30 h-12 w-full rounded-2xl border px-4 text-base outline-none transition focus-visible:ring-[3px]"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className="text-sm font-semibold">
+            Contraseña
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="border-input bg-card focus-visible:ring-primary/30 h-12 w-full rounded-2xl border px-4 text-base outline-none transition focus-visible:ring-[3px]"
+          />
+        </div>
+
+        {/* Error — tono humano */}
+        {error && (
+          <div className="rounded-2xl bg-destructive/8 px-4 py-3">
+            <p className="text-destructive text-sm font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Botón pill grande */}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] mt-2 flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold shadow-md transition-all disabled:opacity-60"
+        >
+          {submitting ? (
+            <>
+              <span className="animate-spin text-lg">⏳</span>
+              Entrando…
+            </>
+          ) : (
+            <>
+              Entrar a casa
+              <span className="text-lg">→</span>
+            </>
+          )}
+        </button>
       </div>
-
-      <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium">
-          Contraseña
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border-input bg-background focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm outline-none focus-visible:ring-2"
-        />
-      </div>
-
-      {error && <p className="text-destructive text-sm">{error}</p>}
-
-      <button
-        type="submit"
-        disabled={submitting}
-        className="bg-primary text-primary-foreground hover:bg-primary/90 w-full rounded-md py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
-      >
-        {submitting ? "Entrando…" : "Entrar"}
-      </button>
     </form>
   );
 }

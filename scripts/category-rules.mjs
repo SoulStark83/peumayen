@@ -96,6 +96,14 @@ export const RULES = [
   { match: /o2\s*fibra|movistar|vodafone|orange|yoigo|masmovil|jazztel|pepephone|digi/i, cat: "servicios", sub: "telefonia_internet" },
   { match: /notaria|asesoria|gestoria|abogado/i, cat: "servicios", sub: "profesionales" },
 
+  // --- Vivienda (compraventa + obras) ---
+  { match: /resto\s+compraventa|compraventa/i, cat: "vivienda", sub: "compraventa", kind: "expense" },
+  { match: /constit\.?\s*prestamo|constitucion\s+prestamo|hipoteca/i, cat: "vivienda", sub: "hipoteca", kind: "income" },
+  { match: /pago\s+\d+.*\s+de\s+obra|obra/i, cat: "vivienda", sub: "obras" },
+
+  // --- Seguros Caixa (MYBOX = nombre comercial productos seguro CaixaBank) ---
+  { match: /recibo\s+unico\s+mybox|mybox/i, cat: "financiero", sub: "seguros" },
+
   // --- Financiero ---
   { match: /cetelem/i, cat: "financiero", sub: "prestamo" },
   { match: /^comision\b|comision\s+de\s+mantenimiento|comision\s+por\s+transferencia/i, cat: "financiero", sub: "comisiones" },

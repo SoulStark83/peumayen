@@ -235,34 +235,85 @@ export type Database = {
           },
         ]
       }
+      message_reactions: {
+        Row: {
+          id: string
+          household_id: string
+          message_id: string
+          member_id: string
+          emoji: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          household_id: string
+          message_id: string
+          member_id: string
+          emoji: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          household_id?: string
+          message_id?: string
+          member_id?: string
+          emoji?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      message_reads: {
+        Row: {
+          household_id: string
+          member_id: string
+          last_read_at: string
+        }
+        Insert: {
+          household_id: string
+          member_id: string
+          last_read_at?: string
+        }
+        Update: {
+          household_id?: string
+          member_id?: string
+          last_read_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
+          audio_url: string | null
           body: string
           created_at: string
           deleted_at: string | null
           edited_at: string | null
           household_id: string
           id: string
+          image_url: string | null
           reply_to_id: string | null
           sender_id: string
         }
         Insert: {
+          audio_url?: string | null
           body: string
           created_at?: string
           deleted_at?: string | null
           edited_at?: string | null
           household_id: string
           id?: string
+          image_url?: string | null
           reply_to_id?: string | null
           sender_id: string
         }
         Update: {
+          audio_url?: string | null
           body?: string
           created_at?: string
           deleted_at?: string | null
           edited_at?: string | null
           household_id?: string
           id?: string
+          image_url?: string | null
           reply_to_id?: string | null
           sender_id?: string
         }

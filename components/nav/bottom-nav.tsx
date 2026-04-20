@@ -2,13 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  CalendarCheck,
-  Home,
-  MessageCircle,
-  Users,
-} from "lucide-react";
+import { CalendarCheck, Home, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAlerts } from "@/components/providers/alerts-provider";
 
 type TabDef = {
   href: string;
@@ -20,13 +16,13 @@ type TabDef = {
 const TABS: readonly TabDef[] = [
   {
     href: "/",
-    label: "Hoy",
+    label: "Inicio",
     icon: Home,
     match: (p) => p === "/",
   },
   {
     href: "/agenda",
-    label: "Agenda",
+    label: "Plan",
     icon: CalendarCheck,
     match: (p) =>
       p.startsWith("/agenda") ||
@@ -40,27 +36,18 @@ const TABS: readonly TabDef[] = [
     icon: MessageCircle,
     match: (p) => p.startsWith("/chat"),
   },
-  {
-    href: "/nosotros",
-    label: "Nosotros",
-    icon: Users,
-    match: (p) =>
-      p.startsWith("/nosotros") ||
-      p.startsWith("/me") ||
-      p.startsWith("/roma") ||
-      p.startsWith("/finances"),
-  },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { count } = useAlerts();
 
   return (
     <nav
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky bottom-0 z-40 border-t backdrop-blur"
+      className="sticky bottom-0 z-40 bg-card/95 supports-[backdrop-filter]:bg-card/85 backdrop-blur border-t border-border/60 shadow-[0_-2px_16px_oklch(0.30_0.06_58/0.08)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="mx-auto flex max-w-5xl items-stretch justify-between">
+      <ul className="mx-auto flex max-w-lg items-stretch justify-between px-3">
         {TABS.map(({ href, label, icon: Icon, match }) => {
           const active = match(pathname);
           return (
@@ -68,19 +55,38 @@ export function BottomNav() {
               <Link
                 href={href}
                 className={cn(
-                  "relative flex h-16 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "relative flex flex-col items-center justify-center gap-1 py-2.5 transition-all duration-150",
+                  active ? "text-primary" : "text-muted-foreground",
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                {active && (
-                  <span
-                    aria-hidden
-                    className="bg-primary absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-b"
+                <span
+                  className={cn(
+                    "absolute inset-x-4 inset-y-1.5 rounded-2xl transition-all duration-200",
+                    active ? "bg-primary/10 scale-100 opacity-100" : "scale-90 opacity-0",
+                  )}
+                  aria-hidden
+                />
+                <div className="relative">
+                  <Icon
+                    className={cn(
+                      "h-6 w-6 transition-all duration-200",
+                      active && "scale-110",
+                    )}
+                    strokeWidth={active ? 2.5 : 1.75}
                   />
-                )}
-                <Icon className="h-5 w-5" strokeWidth={active ? 2.25 : 1.75} />
-                <span>{label}</span>
+                  {href === "/" && count > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary" />
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "relative text-[11px] leading-none transition-all duration-150",
+                    active ? "font-bold" : "font-medium",
+                  )}
+                >
+                  {label}
+                </span>
               </Link>
             </li>
           );

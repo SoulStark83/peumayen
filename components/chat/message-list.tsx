@@ -4,25 +4,67 @@ import { useEffect, useMemo, useRef } from "react";
 import { MessageBubble } from "@/components/chat/message-bubble";
 import { useMembers } from "@/components/providers/household-provider";
 import { dayKeyMadrid, relativeDayLabel, shouldGroupWithPrevious } from "@/lib/date";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage, MessageReaction, ReadStatus } from "@/lib/types";
 
 type Entry =
   | { kind: "day"; key: string; label: string }
-  | { kind: "message"; message: ChatMessage; groupedWithPrev: boolean; mine: boolean; pending: boolean };
+  | {
+      kind: "message";
+      message: ChatMessage;
+      groupedWithPrev: boolean;
+      mine: boolean;
+      pending: boolean;
+      readStatus: ReadStatus;
+      reactions: MessageReaction[];
+    };
 
 export function MessageList({
   messages,
   currentMemberId,
   pendingIds,
+  totalMembers,
+  reactions,
+  reads,
+  onReply,
+  onEdit,
+  onDelete,
+  onReact,
 }: {
   messages: ChatMessage[];
   currentMemberId: string;
   pendingIds: Set<string>;
+  totalMembers: number;
+  reactions: Map<string, MessageReaction[]>;
+  reads: Map<string, string>;
+  onReply: (msg: ChatMessage) => void;
+  onEdit: (msg: ChatMessage) => void;
+  onDelete: (msg: ChatMessage) => void;
+  onReact: (msgId: string, emoji: string) => void;
 }) {
   const members = useMembers();
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastMessageCount = useRef(messages.length);
   const stickToBottom = useRef(true);
+
+  // Build a map for reply lookups
+  const messagesById = useMemo(
+    () => new Map(messages.map((m) => [m.id, m])),
+    [messages],
+  );
+
+  function getReadStatus(message: ChatMessage, mine: boolean, pending: boolean): ReadStatus {
+    if (pending) return "pending";
+    if (!mine) return "sent";
+    // Count other members who have read past this message's created_at
+    const otherCount = totalMembers - 1;
+    if (otherCount <= 0) return "sent";
+    let readCount = 0;
+    for (const [memberId, lastReadAt] of reads.entries()) {
+      if (memberId === currentMemberId) continue;
+      if (lastReadAt >= message.created_at) readCount++;
+    }
+    return readCount >= otherCount ? "read" : "sent";
+  }
 
   const entries = useMemo<Entry[]>(() => {
     const out: Entry[] = [];
@@ -36,19 +78,23 @@ export function MessageList({
         lastDayKey = dk;
         prev = undefined;
       }
+      const mine = m.sender_id === currentMemberId;
+      const pending = pendingIds.has(m.id);
       out.push({
         kind: "message",
         message: m,
         groupedWithPrev: shouldGroupWithPrevious(m, prev),
-        mine: m.sender_id === currentMemberId,
-        pending: pendingIds.has(m.id),
+        mine,
+        pending,
+        readStatus: getReadStatus(m, mine, pending),
+        reactions: reactions.get(m.id) ?? [],
       });
       prev = m;
     }
     return out;
-  }, [messages, currentMemberId, pendingIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, currentMemberId, pendingIds, reactions, reads, totalMembers]);
 
-  // Track whether user is scrolled to the bottom; if so, auto-stick on new msgs.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -60,20 +106,16 @@ export function MessageList({
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Scroll to bottom on mount and when new messages arrive (if stuck).
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const isNew = messages.length > lastMessageCount.current;
     lastMessageCount.current = messages.length;
     if (isNew && stickToBottom.current) {
-      requestAnimationFrame(() => {
-        el.scrollTop = el.scrollHeight;
-      });
+      requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
     }
   }, [messages]);
 
-  // Initial mount: always jump to bottom.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -110,6 +152,21 @@ export function MessageList({
               mine={e.mine}
               groupedWithPrev={e.groupedWithPrev}
               pending={e.pending}
+              readStatus={e.readStatus}
+              reactions={e.reactions}
+              myMemberId={currentMemberId}
+              replyToMessage={e.message.reply_to_id ? messagesById.get(e.message.reply_to_id) : undefined}
+              replyToSender={
+                e.message.reply_to_id
+                  ? members.find(
+                      (m) => m.id === messagesById.get(e.message.reply_to_id!)?.sender_id,
+                    )
+                  : undefined
+              }
+              onReply={() => onReply(e.message)}
+              onEdit={() => onEdit(e.message)}
+              onDelete={() => onDelete(e.message)}
+              onReact={(emoji) => onReact(e.message.id, emoji)}
             />
           ),
         )}

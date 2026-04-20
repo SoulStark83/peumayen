@@ -3,68 +3,107 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════
+   PEUMAYEN — "esto es mi casa"
+
+   No es una app de productividad.
+   Es una app de vida familiar.
+
+   Paleta: arena cálida · coral vivo · verde salvia
+   Sensación: WhatsApp + hogar + emoción
+   ═══════════════════════════════════════════════════ */
+
 :root {
-  --background: oklch(0.975 0.006 85);
-  --foreground: oklch(0.22 0.012 85);
-  --card: oklch(0.99 0.004 85);
-  --card-foreground: oklch(0.22 0.012 85);
-  --popover: oklch(0.99 0.004 85);
-  --popover-foreground: oklch(0.22 0.012 85);
-  --primary: oklch(0.48 0.08 155);
-  --primary-foreground: oklch(0.985 0.004 85);
-  --secondary: oklch(0.94 0.008 85);
-  --secondary-foreground: oklch(0.28 0.012 85);
-  --muted: oklch(0.94 0.008 85);
-  --muted-foreground: oklch(0.48 0.012 85);
-  --accent: oklch(0.91 0.018 150);
-  --accent-foreground: oklch(0.28 0.040 155);
-  --destructive: oklch(0.55 0.18 28);
-  --destructive-foreground: oklch(0.985 0.004 85);
-  --border: oklch(0.88 0.010 85);
-  --input: oklch(0.88 0.010 85);
-  --ring: oklch(0.55 0.08 155);
+  /* ── Fondos: arena parchment, no gris pantalla ── */
+  --background: oklch(0.964 0.024 82);       /* arena cálida, como papel */
+  --foreground: oklch(0.17 0.022 55);        /* chocolate oscuro, no negro frío */
+  --card: oklch(0.992 0.010 76);             /* blanco marfil */
+  --card-foreground: oklch(0.17 0.022 55);
+  --popover: oklch(0.992 0.010 76);
+  --popover-foreground: oklch(0.17 0.022 55);
 
-  --member-1: oklch(0.58 0.10 150);
-  --member-2: oklch(0.62 0.11 75);
-  --member-3: oklch(0.58 0.13 35);
-  --member-4: oklch(0.55 0.08 240);
-  --member-5: oklch(0.65 0.09 15);
-  --member-6: oklch(0.58 0.09 295);
-  --member-7: oklch(0.55 0.09 195);
-  --member-roma: oklch(0.65 0.13 65);
+  /* ── Primary: coral/terracota — cálido, humano, vivo ── */
+  --primary: oklch(0.60 0.17 38);
+  --primary-foreground: oklch(0.99 0.004 80);
 
-  --radius: 0.75rem;
+  /* ── Secondary: arena más oscura ── */
+  --secondary: oklch(0.92 0.018 78);
+  --secondary-foreground: oklch(0.25 0.018 62);
+
+  /* ── Muted: gris cálido, no frío ── */
+  --muted: oklch(0.93 0.015 78);
+  --muted-foreground: oklch(0.52 0.014 72);
+
+  /* ── Accent: melocotón suave ── */
+  --accent: oklch(0.91 0.030 50);
+  --accent-foreground: oklch(0.35 0.065 45);
+
+  /* ── Estados con personalidad ── */
+  --success: oklch(0.56 0.11 152);            /* verde salvia — "en casa" */
+  --success-foreground: oklch(0.98 0.004 85);
+  --warning: oklch(0.68 0.15 70);             /* ámbar cálido */
+  --warning-foreground: oklch(0.17 0.022 55);
+  --destructive: oklch(0.55 0.19 27);         /* rojo coral */
+  --destructive-foreground: oklch(0.98 0.004 85);
+
+  /* ── Bordes e inputs: cálidos, no metálicos ── */
+  --border: oklch(0.86 0.016 76);
+  --input: oklch(0.86 0.016 76);
+  --ring: oklch(0.64 0.17 38);
+
+  /* ── Paleta de miembros: vivos, únicos, reconocibles ── */
+  --member-1: oklch(0.58 0.11 152);   /* salvia */
+  --member-2: oklch(0.62 0.16 38);    /* coral */
+  --member-3: oklch(0.66 0.15 68);    /* dorado */
+  --member-4: oklch(0.56 0.10 222);   /* azul cielo */
+  --member-5: oklch(0.64 0.13 12);    /* rosa */
+  --member-6: oklch(0.58 0.10 290);   /* lavanda */
+  --member-7: oklch(0.56 0.10 192);   /* teal */
+  --member-roma: oklch(0.68 0.16 62); /* miel dorada */
+
+  /* ── Tokens de diseño ── */
+  --radius: 1rem;                       /* 16px base */
 }
 
 .dark {
-  --background: oklch(0.20 0.014 65);
-  --foreground: oklch(0.96 0.008 75);
-  --card: oklch(0.24 0.016 65);
-  --card-foreground: oklch(0.96 0.008 75);
-  --popover: oklch(0.24 0.016 65);
-  --popover-foreground: oklch(0.96 0.008 75);
-  --primary: oklch(0.74 0.11 155);
-  --primary-foreground: oklch(0.19 0.022 155);
-  --secondary: oklch(0.30 0.018 65);
-  --secondary-foreground: oklch(0.96 0.008 75);
-  --muted: oklch(0.30 0.018 65);
-  --muted-foreground: oklch(0.74 0.014 75);
-  --accent: oklch(0.34 0.030 150);
-  --accent-foreground: oklch(0.92 0.028 150);
-  --destructive: oklch(0.64 0.19 28);
-  --destructive-foreground: oklch(0.96 0.008 75);
-  --border: oklch(0.34 0.020 65 / 60%);
-  --input: oklch(0.34 0.020 65 / 80%);
-  --ring: oklch(0.66 0.11 155);
+  --background: oklch(0.18 0.020 55);
+  --foreground: oklch(0.95 0.010 75);
+  --card: oklch(0.23 0.020 58);
+  --card-foreground: oklch(0.95 0.010 75);
+  --popover: oklch(0.23 0.020 58);
+  --popover-foreground: oklch(0.95 0.010 75);
 
-  --member-1: oklch(0.68 0.11 150);
-  --member-2: oklch(0.72 0.12 75);
-  --member-3: oklch(0.68 0.13 35);
-  --member-4: oklch(0.66 0.09 240);
-  --member-5: oklch(0.74 0.10 15);
-  --member-6: oklch(0.68 0.10 295);
-  --member-7: oklch(0.66 0.10 195);
-  --member-roma: oklch(0.74 0.13 65);
+  --primary: oklch(0.72 0.16 38);
+  --primary-foreground: oklch(0.17 0.022 38);
+
+  --secondary: oklch(0.29 0.018 62);
+  --secondary-foreground: oklch(0.95 0.010 75);
+
+  --muted: oklch(0.28 0.018 62);
+  --muted-foreground: oklch(0.72 0.014 72);
+
+  --accent: oklch(0.34 0.036 48);
+  --accent-foreground: oklch(0.92 0.028 50);
+
+  --success: oklch(0.66 0.11 152);
+  --success-foreground: oklch(0.17 0.020 152);
+  --warning: oklch(0.76 0.14 70);
+  --warning-foreground: oklch(0.17 0.022 55);
+  --destructive: oklch(0.65 0.19 27);
+  --destructive-foreground: oklch(0.95 0.010 75);
+
+  --border: oklch(0.32 0.020 60 / 60%);
+  --input: oklch(0.32 0.020 60 / 80%);
+  --ring: oklch(0.68 0.16 38);
+
+  --member-1: oklch(0.68 0.11 152);
+  --member-2: oklch(0.72 0.16 38);
+  --member-3: oklch(0.74 0.15 68);
+  --member-4: oklch(0.66 0.10 222);
+  --member-5: oklch(0.72 0.13 12);
+  --member-6: oklch(0.66 0.10 290);
+  --member-7: oklch(0.64 0.10 192);
+  --member-roma: oklch(0.76 0.16 62);
 }
 
 @theme inline {
@@ -82,6 +121,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -97,12 +140,22 @@
   --color-member-7: var(--member-7);
   --color-member-roma: var(--member-roma);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Radios: generosos y redondeados */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: var(--radius);              /* 16px */
+  --radius-xl: calc(var(--radius) + 8px);  /* 24px */
+  --radius-2xl: calc(var(--radius) + 16px);/* 32px */
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Sombras orgánicas — dan profundidad sin frialdad */
+  --shadow-xs: 0 1px 2px oklch(0.30 0.06 58 / 0.06);
+  --shadow-sm: 0 1px 4px oklch(0.30 0.06 58 / 0.08), 0 1px 2px oklch(0.30 0.06 58 / 0.05);
+  --shadow-DEFAULT: 0 3px 10px oklch(0.30 0.06 58 / 0.10), 0 1px 3px oklch(0.30 0.06 58 / 0.06);
+  --shadow-md: 0 6px 18px oklch(0.30 0.06 58 / 0.12), 0 2px 6px oklch(0.30 0.06 58 / 0.07);
+  --shadow-lg: 0 12px 32px oklch(0.30 0.06 58 / 0.14), 0 4px 10px oklch(0.30 0.06 58 / 0.08);
 }
 
 @layer base {
@@ -120,8 +173,31 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  /* Evita tap highlight gris en móvil para botones */
   button, [role="button"], a {
     -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ── Utilities de componentes ── */
+@layer components {
+  /* Etiqueta de sección */
+  .section-label {
+    @apply text-muted-foreground text-xs font-bold uppercase tracking-widest;
+  }
+
+  /* Tarjeta base familiar */
+  .family-card {
+    @apply rounded-2xl bg-card border shadow-sm;
+  }
+
+  /* Píldora de acción — botón grande thumb-friendly */
+  .pill-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5
+           text-base font-bold shadow-md active:scale-[0.97] transition-all;
+  }
+
+  /* Píldora de estado — badge pequeño */
+  .status-pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
   }
 }
